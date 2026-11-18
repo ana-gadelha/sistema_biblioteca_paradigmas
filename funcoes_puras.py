@@ -38,9 +38,12 @@ def contar_livros_por_categoria(livros):
 
 
 def contar_emprestimos_por_usuario(emprestimos):
+    """Retorna a quantidade de empréstimos por identificador de usuário."""
     return reduce(
-        lambda contagem, emprestimo: {**contagem, emprestimo.usuario.nome: contagem.get(emprestimo.usuario.nome, 0) + 1},
-        emprestimos,
+        lambda contagem, identificador: {
+            **contagem, identificador: contagem.get(identificador, 0) + 1
+        },
+        map(lambda emprestimo: emprestimo.usuario.identificador, emprestimos),
         {}
     )
 
