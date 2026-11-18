@@ -1,3 +1,4 @@
+from collections import Counter
 from datetime import date
 from livro import Livro
 from usuario import Usuario
@@ -16,59 +17,73 @@ from comparacao import(
     calcular_total_de_multas_funcional
 )
 
-biblioteca = Biblioteca()
 
-dom_casmurro = Livro(1, "Dom Casmurro", "Machado de Assis", "Romance")
-codigo_limpo = Livro(2, "Código Limpo", "Robert Martin", "Tecnologia")
-capitaes_da_areia = Livro(3, "Capitães da Areia", "Jorge Amado", "Romance")
-python_fluente = Livro(4, "Python Fluente", "Luciano Ramalho", "Tecnologia")
-sapiens = Livro(5, "Sapiens", "Yuval Harari", "História")
+def main():
+    biblioteca = Biblioteca()
 
-ana = Usuario(1, "Ana", "2023001")
-bruno = Usuario(2, "Bruno", "2023002")
-carla = Usuario(3, "Carla", "2023003")
+    dom_casmurro = Livro(1, "Dom Casmurro", "Machado de Assis", "Romance")
+    codigo_limpo = Livro(2, "Código Limpo", "Robert Martin", "Tecnologia")
+    capitaes_da_areia = Livro(3, "Capitães da Areia", "Jorge Amado", "Romance")
+    python_fluente = Livro(4, "Python Fluente", "Luciano Ramalho", "Tecnologia")
+    sapiens = Livro(5, "Sapiens", "Yuval Harari", "História")
 
-for livro in (dom_casmurro, codigo_limpo, capitaes_da_areia, python_fluente, sapiens):
-    biblioteca.cadastrar_livro(livro)
+    ana = Usuario(1, "Ana", "2023001")
+    bruno = Usuario(2, "Bruno", "2023002")
+    carla = Usuario(3, "Carla", "2023003")
 
-for usuario in (ana, bruno, carla):
-    biblioteca.cadastrar_usuario(usuario)
+    for livro in (dom_casmurro, codigo_limpo, capitaes_da_areia, python_fluente, sapiens):
+        biblioteca.cadastrar_livro(livro)
 
-biblioteca.registrar_emprestimo(dom_casmurro, ana, date(2026, 11, 1), date(2026, 11, 8))
-biblioteca.registrar_emprestimo(codigo_limpo, bruno, date(2026, 10, 28), date(2026, 11, 4))
-biblioteca.registrar_emprestimo(sapiens, ana, date(2026, 11, 5), date(2026, 11, 12))
-emprestimo_devolvido = biblioteca.registrar_emprestimo(capitaes_da_areia, carla, date(2026, 10, 20), date(2026, 10, 27))
-biblioteca.registrar_devolucao(emprestimo_devolvido, date(2026, 10, 30))
+    for usuario in (ana, bruno, carla):
+        biblioteca.cadastrar_usuario(usuario)
 
-data_referencia = date(2026, 11, 11)
+    biblioteca.registrar_emprestimo(dom_casmurro, ana, date(2026, 11, 1), date(2026, 11, 8))
+    biblioteca.registrar_emprestimo(codigo_limpo, bruno, date(2026, 10, 28), date(2026, 11, 4))
+    biblioteca.registrar_emprestimo(sapiens, ana, date(2026, 11, 5), date(2026, 11, 12))
+    emprestimo_devolvido = biblioteca.registrar_emprestimo(capitaes_da_areia, carla, date(2026, 10, 20), date(2026, 10, 27))
+    biblioteca.registrar_devolucao(emprestimo_devolvido, date(2026, 10, 30))
 
-print("=== Regra: livro já emprestado ===")
-try:
-    biblioteca.registrar_emprestimo(dom_casmurro, carla, date(2026, 11, 10), date(2026, 11, 17))
-except ValueError as erro:
-    print("Recusado:", erro)
+    data_referencia = date(2026, 11, 11)
 
-print("=== Filtragem por categoria ===")
-romances = filtrar_livros_por_categoria(biblioteca.livros, "Romance")
-print("Romances:", tuple(map(lambda livro: livro.titulo, romances)))
-print("Livros no acervo após o filtro:", len(biblioteca.livros))
+    print("=== Regra: livro já emprestado ===")
+    try:
+        biblioteca.registrar_emprestimo(dom_casmurro, carla, date(2026, 11, 10), date(2026, 11, 17))
+    except ValueError as erro:
+        print("Recusado:", erro)
 
-print("=== Relatório de multas ===")
-relatorio = gerar_relatorio_de_multas(biblioteca.emprestimos, data_referencia)
-for item in relatorio["itens"]:
-    print(item["usuario"], "-", item["livro"], "-", item["dias_de_atraso"], "dias - R$", item["multa"])
-print("Total de multas: R$", relatorio["total"])
+    print("=== Filtragem por categoria ===")
+    romances = filtrar_livros_por_categoria(biblioteca.livros, "Romance")
+    print("Romances:", tuple(map(lambda livro: livro.titulo, romances)))
+    print("Livros no acervo após o filtro:", len(biblioteca.livros))
 
-print("=== Estatísticas ===")
-print("Livros por categoria:", contar_livros_por_categoria(biblioteca.livros))
-print("Empréstimos por usuário:", contar_emprestimos_por_usuario(biblioteca.emprestimos))
-print("Empréstimos ativos:", contar_emprestimos_ativos(biblioteca.emprestimos))
-print("Empréstimos ativos em atraso:", contar_emprestimos_atrasados(biblioteca.emprestimos, data_referencia))
-print("Valor total das multas: R$", calcular_total_de_multas(biblioteca.emprestimos, data_referencia))
+    print("=== Relatório de multas ===")
+    relatorio = gerar_relatorio_de_multas(biblioteca.emprestimos, data_referencia)
+    for item in relatorio["itens"]:
+        print(item["usuario"], "-", item["livro"], "-", item["dias_de_atraso"], "dias - R$", item["multa"])
+    print("Total de multas: R$", relatorio["total"])
 
-print("=== Comparação entre paradigmas ===")
-total_imperativo = calcular_total_de_multas_imperativo(biblioteca.emprestimos, data_referencia)
-total_funcional = calcular_total_de_multas_funcional(biblioteca.emprestimos, data_referencia)
-print("Versão imperativa: R$", total_imperativo)
-print("Versão funcional: R$", total_funcional)
-print("Resultados equivalentes:", total_imperativo == total_funcional)
+    print("=== Estatísticas ===")
+    print("Livros por categoria:", contar_livros_por_categoria(biblioteca.livros))
+    contagem_por_usuario = contar_emprestimos_por_usuario(biblioteca.emprestimos)
+    nomes_por_id = {usuario.identificador: usuario.nome for usuario in biblioteca.usuarios}
+    frequencia_dos_nomes = Counter(nomes_por_id[identificador] for identificador in contagem_por_usuario)
+    emprestimos_por_usuario = {}
+    for identificador, quantidade in contagem_por_usuario.items():
+        nome = nomes_por_id[identificador]
+        rotulo = nome if frequencia_dos_nomes[nome] == 1 else (nome, identificador)
+        emprestimos_por_usuario[rotulo] = quantidade
+    print("Empréstimos por usuário:", emprestimos_por_usuario)
+    print("Empréstimos ativos:", contar_emprestimos_ativos(biblioteca.emprestimos))
+    print("Empréstimos ativos em atraso:", contar_emprestimos_atrasados(biblioteca.emprestimos, data_referencia))
+    print("Valor total das multas: R$", calcular_total_de_multas(biblioteca.emprestimos, data_referencia))
+
+    print("=== Comparação entre paradigmas ===")
+    total_imperativo = calcular_total_de_multas_imperativo(biblioteca.emprestimos, data_referencia)
+    total_funcional = calcular_total_de_multas_funcional(biblioteca.emprestimos, data_referencia)
+    print("Versão imperativa: R$", total_imperativo)
+    print("Versão funcional: R$", total_funcional)
+    print("Resultados equivalentes:", total_imperativo == total_funcional)
+
+
+if __name__ == "__main__":
+    main()

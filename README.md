@@ -46,8 +46,15 @@ O programa cadastra dados de exemplo em memória e exibe a demonstração de tod
 
 - A data de referência é sempre recebida por parâmetro, nunca lida do sistema.
 - As funções puras não alteram as coleções recebidas e devolvem novas estruturas.
-- A estatística de empréstimos por usuário considera todos os empréstimos, ativos ou devolvidos.
+- Os identificadores são únicos dentro do cadastro de livros e do cadastro de usuários. Para registrar um empréstimo, use o livro e o usuário cadastrados na biblioteca.
+- As datas de retirada e devolução são datas de calendário (`datetime.date`). A devolução prevista e a efetiva devem ser no dia da retirada ou depois. Um livro pode ser emprestado novamente a partir do dia em que foi devolvido.
+- A devolução só pode ser registrada uma vez, na biblioteca que criou o empréstimo.
+- A estatística de empréstimos por usuário agrupa por identificador e inclui empréstimos ativos e devolvidos. Na demonstração, o identificador acompanha o nome quando há homônimos na contagem.
 - Empréstimos já devolvidos não geram multa.
+
+## Testes
+
+Execute `python -m unittest discover` a partir da raiz do projeto.
 
 ## Integrantes
 
