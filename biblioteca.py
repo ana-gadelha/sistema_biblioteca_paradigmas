@@ -57,7 +57,6 @@ class Biblioteca:
         identificador = len(self._emprestimos) + 1
         emprestimo = Emprestimo(identificador, livro, usuario, data_emprestimo, data_prevista_devolucao)
 
-        # Um empréstimo ativo ocupa o livro da retirada em diante.
         for anterior in self._emprestimos:
             if (
                 anterior.livro.identificador == livro.identificador
